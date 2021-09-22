@@ -100,9 +100,15 @@
                         </select>
                     </div>
                     <br>
+                    <h3 class="aboutMeTitle-1IYtPE base-1x0h_U size12-3cLvbJ muted-3-7c5L uppercase-3VWUQ9">Studio Presence
+                    </h3>
+                    <label for='studio' class="aboutMeBody-3GuvKk markup-2BOw-j clamped-IwJfxR"><input type="checkbox" id="studio">Enable Studio Presence</input>
+Please note that enabling this will install a Roblox Studio plugin.
+                    </div>
+                    <br>
                     <div class="aboutMeBody-3GuvKk markup-2BOw-j clamped-IwJfxR"><center><a href="https://discord.gg/5aQSDGCTX6">Join our Discord</a> &bull; <a
                                 href="https://github.com/rblxRP/rblxRP">GitHub</a> &bull; <a
-                                href="https://thelmgn.com/donate.html">Donate</a></center>
+                                href="https://app.archbee.io/public/9df1xAuEKf28ejvqOaTdm">Help</a></center>
                     </div>
                 </div>
             </div>
@@ -125,6 +131,9 @@
             document.querySelector("#icon").onchange = () => {
                 socket.send(`{"defaultIcon":"${document.querySelector("#icon").value}"}`);
             }
+            document.querySelector("#studio").onchange = () => {
+                socket.send(`{"studioPresence":${document.querySelector("#studio").checked}}`);
+            }
         };
         socket.onmessage = function (event) {
             var data = JSON.parse(event.data);
@@ -133,6 +142,7 @@
 
             document.querySelector(".assetsLargeImage-eYwpTX").src = "assets/" + data.config.defaultIcon + ".png";
             document.querySelector("#icon").value = data.config.defaultIcon;
+            document.querySelector("#studio").checked = data.config.studioPresence;
 
             switch (data.state.type) {
                 case "none":
@@ -145,6 +155,11 @@
                     if (!data.state.info.name) setTimeout(() => socket.send("{}"), 100) // refresh because no name likely is the promise hasn't resolved yet.
                     document.querySelector(".details-38sfDr").innerText =  data.state.info.name || data.state.gameId
                     document.querySelector(".state-Tt0LO3").innerText = "by " + (data.state.info.by || "A Roblox Developer")
+                    break;
+                case "studio":
+                    document.querySelector(".activityName-1IaRLn").innerText = "Roblox Studio"
+                    document.querySelector(".details-38sfDr").innerText =  data.state.info.name || data.state.providedState.gameName || "Working on a game"
+                    document.querySelector(".state-Tt0LO3").innerText = data.state.providedState.state || "Working on a game"
                     break;
                 case "error":
                     document.querySelector(".activityName-1IaRLn").innerText = "Errored"
