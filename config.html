@@ -155,6 +155,8 @@ Please note that enabling this will install a Roblox Studio plugin.
                     if (!data.state.info.name) setTimeout(() => socket.send("{}"), 100) // refresh because no name likely is the promise hasn't resolved yet.
                     document.querySelector(".details-38sfDr").innerText =  data.state.info.name || data.state.gameId
                     document.querySelector(".state-Tt0LO3").innerText = "by " + (data.state.info.by || "A Roblox Developer")
+                    if (data.state.info.iconKey && data.state.info.iconKey.startsWith("http")) 
+                        document.querySelector(".assetsLargeImage-eYwpTX").src = data.state.info.iconKey
                     break;
                 case "studio":
                     document.querySelector(".activityName-1IaRLn").innerText = "Roblox Studio"
